@@ -1,3 +1,7 @@
+use api_fetcher::run;
+
 fn main() {
-    println!("Hello, world!");
+  run().unwrap_or_else(|e| {
+    eprintln!("{}", e);
+  });
 }
