@@ -4,7 +4,8 @@
     "headers": {},
     "endpoints": [
       {
-        "url": "https://dog.ceo/api/breeds/image/random"
+        "url": "https://dog.ceo/api/breeds/image/random",
+        "headers": {}
       },
       {
         "url": "https://dog.ceo/api/breed/Affenpinscher/images/random"

@@ -1,4 +1,8 @@
 use crate::config::{Config, Endpoint};
+use crate::types::Result;
+
+use std::str::FromStr;
+use std::collections::HashMap;
 
 use reqwest::header::{
   HeaderName,
@@ -7,28 +11,23 @@ use reqwest::header::{
 };
 
 pub fn create_header_map(config: &Config, endpoint: &Endpoint) -> HeaderMap {
-  use std::collections::HashMap;
+  create_headers(config.requests.headers.as_ref())
+      .into_iter()
+      .chain(create_headers(endpoint.headers.as_ref()))
+      .collect()
+}
 
-  let glob_headers = config.requests.as_ref().unwrap().headers.as_ref().unwrap();
-  let glob_headers: HashMap<HeaderName, HeaderValue> = glob_headers.into_iter()
-      .map(|(name, value)| create_header(&name, &value))
-      .collect();
-
-  let request_headers: HashMap<HeaderName, HeaderValue> = endpoint.headers
-      .as_ref()
+fn create_headers(headers: Option<&HashMap<String, String>>) -> HashMap<HeaderName, HeaderValue> {
+  headers
       .unwrap_or(&HashMap::new())
       .into_iter()
-      .map(|(name, value)| create_header(name, value))
-      .collect();
-
-  request_headers.into_iter()
-      .chain(glob_headers)
+      .map(|(name, value)| create_header(&name, &value))
       .collect()
 }
 
 fn create_header(name: &String, value: &String) -> (HeaderName, HeaderValue) {
   (
-    HeaderName::from_bytes(name.as_bytes()).unwrap(),
-    HeaderValue::from_bytes(value.as_bytes()).unwrap()
+    HeaderName::from_str(name).unwrap(),
+    HeaderValue::from_str(value).unwrap()
   )
 }

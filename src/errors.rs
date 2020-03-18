@@ -1,6 +1,3 @@
-use crate::errors::Error::IoError;
-use std::error::Error as StdError;
-
 const ERR_MISSING_CONFIG_PATH: &str = "\
   Config file path is missing, \
   example of usage ./api_fetcher path/to/config.json\
@@ -56,14 +53,14 @@ impl Error {
 
 impl From<std::io::Error> for Error {
   fn from(e: std::io::Error) -> Self {
-    IoError(e)
+    Error::IoError(e)
   }
 }
 
 impl std::fmt::Display for Error {
-  fn fmt(&self, f: &mut serde::export::Formatter<'_>) -> std::fmt::Result {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     match self {
-      Error::IoError(e) => write!(f, "{}", e.description()),
+      Error::IoError(e) => e.fmt(f),
       Error::ConfigError(e) => write!(f, "{}", e),
     }
   }
