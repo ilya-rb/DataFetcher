@@ -1,8 +1,7 @@
 [package]
-name = "api_fetcher"
+name = "data_fetcher"
 version = "0.1.0"
-authors = ["a1"]
-edition = "2018"
+authors = ["Ilya <ilya.ryabchuk@gmail.com>"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
