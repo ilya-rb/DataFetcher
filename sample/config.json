@@ -1,4 +1,17 @@
 {
-  "destination": "",
-  "requests": []
+  "dst": "dst",
+  "requests": {
+    "headers": {},
+    "endpoints": [
+      {
+        "url": "https://dog.ceo/api/breeds/image/random"
+      },
+      {
+        "url": "https://dog.ceo/api/breed/Affenpinscher/images/random"
+      },
+      {
+        "url": "https://dog.ceo/api/breed/African/images/random"
+      }
+    ]
+  }
 }

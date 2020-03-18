@@ -1,38 +1,56 @@
-use std::any::Any;
-use std::path::{Path, PathBuf};
-use std::ffi::OsStr;
-use std::fs::File;
-use std::env;
+mod config;
+mod errors;
+mod headers;
 
-const ERR_MISSING_CONFIG_PATH: &str = "Config file path is missing";
-const ERR_INVALID_CONFIG_FORMAT: &str = "Config file must be a .json file";
-const ERR_INVALID_JSON_FORMAT: &str = "Config file contains invalid JSON";
-const CONFIG_FILE_EXT: &str = "json";
+use config::Config;
+use config::Endpoint;
+use errors::Error;
 
-pub fn run() -> Result<(), Box<dyn std::error::Error>> {
-  parse_config_path()?;
+pub fn run() -> Result<(), Error> {
+  let config = Config::new()?;
+  config.validate()?;
+  perform_requests(config)?;
   Ok(())
 }
 
-fn parse_config_path() -> Result<PathBuf, &'static str> {
-  let config_path: String = env::args()
-      // Skip program's name
-      .skip(1)
-      .collect();
+fn perform_requests(config: Config) -> Result<(), Error> {
+  let endpoints = config.requests.as_ref().unwrap().endpoints.as_ref().unwrap();
 
-  if config_path.is_empty() {
-    return Err(ERR_MISSING_CONFIG_PATH);
+  for e in endpoints.iter() {
+    let response = make_http_request(&config, &e)?;
+    store_response_to_file(&config, response, &e.url);
   }
 
-  let path = Path::new(&config_path);
-  match path.extension() {
-    None => Err(ERR_INVALID_CONFIG_FORMAT),
-    Some(ext) => {
-      if ext.eq(CONFIG_FILE_EXT) {
-        Ok(path.to_owned())
-      } else {
-        Err(ERR_INVALID_CONFIG_FORMAT)
-      }
-    }
+  Ok(())
+}
+
+fn make_http_request(config: &Config, endpoint: &Endpoint) -> Result<String, Error> {
+  let client = reqwest::blocking::Client::builder()
+      .default_headers(headers::create_header_map(&config, &endpoint))
+      .build()
+      .unwrap();
+
+  let response: reqwest::blocking::Response = client.get(&endpoint.url).send().unwrap();
+  Ok(response.text().unwrap())
+}
+
+fn store_response_to_file(config: &Config, response: String, url: &String) {
+  use std::fs;
+  use std::fs::File;
+  use std::io::Write;
+  use reqwest::Url;
+
+  let url = Url::parse(&url).unwrap();
+  let url_path: Vec<&str> = url.path_segments().unwrap().collect();
+
+  let (file_name, url_path) = url_path.split_last().unwrap();
+
+  let url_path = format!("{}/{}", config.dst.as_ref().unwrap(), url_path.join("/"));
+  let file_name = format!("{}/{}.{}", url_path, file_name, config::CONFIG_FILE_EXT);
+
+  fs::create_dir_all(url_path);
+
+  if let Ok(mut f) = File::create(file_name) {
+    f.write_all(&response.as_bytes());
   }
 }
