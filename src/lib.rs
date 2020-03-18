@@ -9,11 +9,14 @@ use errors::Error;
 use types::Result;
 
 pub fn run() -> Result<()> {
-  let config = Config::from_env_args()?;
+  let config = Config::from_args(std::env::args().collect())?;
 
   for e in config.requests.endpoints.iter() {
-    let response = make_http_request(&config, &e)?;
-    write_response_to_file(&config, response, &e.url);
+    // For now if error happened just skip the request and proceed
+    // to the next one
+    if let Ok(response) = make_http_request(&config, &e) {
+      write_response_to_file(&config, response, &e.url)
+    };
   }
 
   Ok(())
