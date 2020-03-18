@@ -25,6 +25,7 @@ fn make_http_request(config: &Config, endpoint: &Endpoint) -> Result<String> {
       .build()
       .unwrap();
 
+  // TODO: Handle unwraps here
   Ok(client.get(&endpoint.url).send().unwrap().text().unwrap())
 }
 
@@ -34,6 +35,7 @@ fn write_response_to_file(config: &Config, response: String, url: &String) {
   use std::io::Write;
   use reqwest::Url;
 
+  // TODO: Handle unwraps here
   let url = Url::parse(&url).unwrap();
   let url_path: Vec<&str> = url.path_segments().unwrap().collect();
 
