@@ -1,6 +1,6 @@
 const ERR_MISSING_CONFIG_PATH: &str = "\
   Config file path is missing, \
-  example of usage ./api_fetcher path/to/config.json\
+  example of usage ./data_fetcher path/to/config.json\
   ";
 
 const ERR_INVALID_CONFIG_FORMAT: &str = "\
