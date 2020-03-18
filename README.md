@@ -1,7 +1,12 @@
-### WIP
+### [🚧 WIP 👷‍♀️⛏👷🔧️👷🔧 🚧 ]
 
 # Da heck is dis?
 Small thing to make HTTP requests from a JSON file and store it as a file tree.
+
+# Why?
+This can be useful for writing automated ui tests
+to avoid interacting with real server and to avoid manually creating 
+response files to start tests.
 
 ### Example config:
 ```config.json```
@@ -40,3 +45,12 @@ Small thing to make HTTP requests from a JSON file and store it as a file tree.
     - Example of endpoint object:
     - `url`[required] - url of http request
     - `headers`[optional] - headers of particular request (will be merged with parent headers if present)
+    
+### TODO:
+ - More accurate error handling
+ - Parallel execution
+ - Don't execute requests if response are present
+ - Different request types (POST, DELETE, etc...)
+ - `--force` flag to re-execute all requests
+ - Logging (`--verbose`) flag
+ - Appending query parameters to requests
