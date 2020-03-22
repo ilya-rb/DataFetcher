@@ -11,7 +11,6 @@ mod types;
 use types::Result;
 
 const FLAG_VERBOSE: &str = "--verbose";
-const _FLAG_FORCE: &str = "--force";
 
 pub fn run() -> Result<()> {
     use config::Config;
@@ -20,7 +19,7 @@ pub fn run() -> Result<()> {
 
     if is_debug() || args.contains(&FLAG_VERBOSE.to_string()) {
         if let Err(e) = simple_logger::init() {
-            eprintln!("Error initializing logger: {}", e);
+            eprintln!("Error initializing logger\n {}", e);
         }
     }
 
@@ -31,9 +30,10 @@ pub fn run() -> Result<()> {
         match network::make_http_request(&config, &e) {
             Ok(response) => {
                 info!("{} :: SUCCESS", &e.url);
-                files::write_response_to_file(&config, response, &e.url)
+                let dst_file = files::create_dst_file(&config, &e.url)?;
+                files::write_response_to_file(dst_file, response)?;
             }
-            Err(err) => error!("Error executing {}\n{:?}", &e.url, err),
+            Err(err) => error!("Error fetching from: {}\n{}", &e.url, err),
         }
     }
 
