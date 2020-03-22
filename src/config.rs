@@ -76,44 +76,29 @@ impl Config {
 
 #[cfg(test)]
 mod test {
-    use super::*;
-    use crate::errors::Error;
-    use std::any::Any;
+  use super::*;
+  use crate::errors::AppErrorType;
 
-    #[test]
-    fn parse_config_path_should_return_valid_path() {
-        let path = "path/to/config.json".to_string();
-        let args = vec!["api_fetcher".to_string(), path.clone()];
-        let result = Config::parse_env_config_path(&args);
+  #[test]
+  fn parse_config_path_should_return_valid_path() {
+    let path = "path/to/config.json".to_string();
+    let args = vec!["api_fetcher".to_string(), path.clone()];
+    let result = Config::parse_env_config_path(&args);
+    assert!(result.unwrap().to_str().unwrap().eq(&path));
+  }
 
-        assert!(result.is_ok());
-        assert!(result.unwrap().to_str().unwrap().eq(&path));
-    }
+  #[test]
+  fn parse_config_path_should_return_invalid_ext_error() {
+    let path = "path/to/config.txt".to_string();
+    let args = vec!["arg".to_string(), path.clone()];
+    let result = Config::parse_env_config_path(&args);
+    assert_eq!(result.err().unwrap(), AppErrorType::InvalidConfigFileFormat);
+  }
 
-    #[test]
-    fn parse_config_path_should_return_invalid_ext_error() {
-        let path = "path/to/config.txt".to_string();
-        let args = vec!["arg".to_string(), path.clone()];
-        let result = Config::parse_env_config_path(&args);
-
-        assert!(result.is_err());
-        //assert_eq!(result.err.unwrap, );
-        // assert!(result
-        //     .err()
-        //     .unwrap()
-        //     .type_id()
-        //     .eq(&Error::invalid_config_format().type_id()));
-    }
-
-    #[test]
-    fn parse_config_should_return_missing_path_err() {
-        let args = vec!["arg".to_string()];
-        let result = Config::parse_env_config_path(&args);
-        assert!(result.is_err());
-        // assert!(result
-        //     .err()
-        //     .unwrap()
-        //     .type_id()
-        //     .eq(&Error::missing_config_path().type_id()));
-    }
+  #[test]
+  fn parse_config_should_return_missing_path_err() {
+    let args = vec!["arg".to_string()];
+    let result = Config::parse_env_config_path(&args);
+    assert_eq!(result.err().unwrap(), AppErrorType::MissingConfig);
+  }
 }

@@ -4,7 +4,7 @@ pub enum Error {
   AppError(AppErrorType, &'static str),
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum AppErrorType {
   /// Config path file is not specified in env arguments
   MissingConfig,
@@ -27,6 +27,15 @@ pub enum AppErrorType {
   /// Error trying to parse request body as text 
   /// (probably some internal reqwest error)
   ResponseParseError,
+}
+
+impl std::cmp::PartialEq<AppErrorType> for Error {
+  fn eq(&self, other: &AppErrorType) -> bool {
+    match self {
+      Error::AppError(t, _) => t == other,
+      _ => false
+    }
+  }
 }
 
 impl From<std::io::Error> for Error {
