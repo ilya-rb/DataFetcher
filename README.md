@@ -35,7 +35,7 @@ response files to start tests.
 ![Example structure](sample/sample.png)
 
 ### Usage:
-`./data_fetcher path/to/config.json [FLAGS`
+`./data_fetcher path/to/config.json [FLAGS]`
 
 ### Flags:
 - `-- verbose`: enable logging
