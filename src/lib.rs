@@ -30,7 +30,7 @@ pub fn run() -> Result<()> {
         match network::make_http_request(&config, &e) {
             Ok(response) => {
                 info!("{} :: SUCCESS", &e.url);
-                let dst_file = files::create_dst_file(&config, &e.url)?;
+                let dst_file = files::create_dst_file(&config.dst, &e.url)?;
                 files::write_response_to_file(dst_file, response)?;
             }
             Err(err) => error!("Error fetching from: {}\n{}", &e.url, err),

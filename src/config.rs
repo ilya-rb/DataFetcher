@@ -84,6 +84,7 @@ mod test {
     let path = "path/to/config.json".to_string();
     let args = vec!["api_fetcher".to_string(), path.clone()];
     let result = Config::parse_env_config_path(&args);
+
     assert!(result.unwrap().to_str().unwrap().eq(&path));
   }
 
@@ -92,6 +93,7 @@ mod test {
     let path = "path/to/config.txt".to_string();
     let args = vec!["arg".to_string(), path.clone()];
     let result = Config::parse_env_config_path(&args);
+
     assert_eq!(result.err().unwrap(), AppErrorType::InvalidConfigFileFormat);
   }
 
@@ -99,6 +101,7 @@ mod test {
   fn parse_config_should_return_missing_path_err() {
     let args = vec!["arg".to_string()];
     let result = Config::parse_env_config_path(&args);
+    
     assert_eq!(result.err().unwrap(), AppErrorType::MissingConfig);
   }
 }
