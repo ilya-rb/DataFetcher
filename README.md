@@ -52,5 +52,5 @@ response files to start tests.
  - Don't execute requests if response are present
  - Different request types (POST, DELETE, etc...)
  - `--force` flag to re-execute all requests
- ~~- Logging (`--verbose`) flag~~
+ - ~~- Logging (`--verbose`) flag~~
  - Appending query parameters to requests
