@@ -35,7 +35,10 @@ response files to start tests.
 ![Example structure](sample/sample.png)
 
 ### Usage:
-`./data_fetcher path/to/config.json`
+`./data_fetcher path/to/config.json` [FLAGS]
+
+### Flags:
+-- verbose - enable logging
 
 ### Config overview:
 - `dst`[required] - Destination root where responses tree will start from
