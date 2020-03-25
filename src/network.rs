@@ -47,7 +47,7 @@ fn create_header_map(config: &Config, endpoint: &Endpoint) -> HeaderMap {
 fn create_headers(headers: Option<&HashMap<String, String>>) -> HashMap<HeaderName, HeaderValue> {
   let mut result = HashMap::new();
 
-  if let Some(headers) = headers.as_ref() {
+  if let Some(headers) = headers {
     for (k, v) in headers.iter() {
       let name = HeaderName::from_str(k);
       let value = HeaderValue::from_str(v);
