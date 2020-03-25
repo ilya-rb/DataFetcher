@@ -50,10 +50,6 @@ response files to start tests.
     - `headers`[optional] - headers of particular request (will be merged with parent headers if present)
     
 ### TODO:
- - More accurate error handling
  - Parallel execution
- - Don't execute requests if response are present
  - Different request types (POST, DELETE, etc...)
- - `--force` flag to re-execute all requests
- - ~~- Logging (`--verbose`) flag~~
  - Appending query parameters to requests
