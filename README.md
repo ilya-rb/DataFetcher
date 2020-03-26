@@ -39,6 +39,7 @@ response files to start tests.
 
 ### Flags:
 - `-- verbose`: enable logging
+- `-- force`: re-download all requests (by default, if the response is present, the request will be skipped)
 
 ### Config overview:
 - `dst`[required] - Destination root where responses tree will start from
