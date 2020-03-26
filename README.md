@@ -38,8 +38,8 @@ response files to start tests.
 `./data_fetcher path/to/config.json [FLAGS]`
 
 ### Flags:
-- `-- verbose`: enable logging
-- `-- force`: re-download all requests (by default, if the response is present, the request will be skipped)
+- `--verbose`: enable logging
+- `--force`: re-download all requests (by default, if the response is present, the request will be skipped)
 
 ### Config overview:
 - `dst`[required] - Destination root where responses tree will start from
