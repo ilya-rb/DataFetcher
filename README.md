@@ -1,7 +1,7 @@
 ### [🚧 WIP 👷‍♀️⛏👷🔧️👷🔧 🚧 ]
 
 # Da heck is dis?
-Small command-line thing to make HTTP requests from and store responses as a file tree.
+Small command-line thing to make HTTP requests and store responses as a file tree.
 
 # Why?
 This can be useful for writing automated ui tests
