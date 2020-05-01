@@ -1,0 +1,12 @@
+dst: dst # path/to/dst/folder
+requests:
+  headers:
+    # - Content-Type:application/json
+    # - Custom-Hader:value
+  endpoints:
+    # - url: GET/POST/PUT/DELETE/... https://dog.ceo/api/breeds/image/random
+    - url: https://dog.ceo/api/breeds/image/random
+      # headers:
+        # - Content-Type:text/plain
+    - url: https://dog.ceo/api/breed/airedale/images/random
+    - url: https://dog.ceo/api/breed/akita/images/random
