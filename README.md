@@ -9,30 +9,10 @@ to avoid interacting with real server and to avoid manually creating
 response files to start tests.
 
 ### Example config:
-```config.json```
-```json
-{
-  "dst": "path/to/destination/root",
-  "requests": {
-    "headers": {},
-    "endpoints": [
-      {
-        "url": "https://dog.ceo/api/breeds/image/random",
-        "headers": {}
-      },
-      {
-        "url": "https://dog.ceo/api/breed/Affenpinscher/images/random"
-      },
-      {
-        "url": "https://dog.ceo/api/breed/African/images/random"
-      }
-    ]
-  }
-}
-```
+![Example config](sample/sample.png)
 
 ### Will result in:
-![Example structure](sample/sample.png)
+![Example response](sample/sample_response.png)
 
 ### Usage:
 `./data_fetcher path/to/config.json [FLAGS]`
