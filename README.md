@@ -15,7 +15,7 @@ response files to start tests.
 ![Example response](sample/sample_response.png)
 
 ### Usage:
-`./data_fetcher path/to/config.json [FLAGS]`
+`./data_fetcher path/to/config.yml [FLAGS]`
 
 ### Flags:
 - `--verbose`: enable logging
