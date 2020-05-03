@@ -10,18 +10,14 @@ use std::str::FromStr;
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 
 pub fn make_http_request(config: &Config, endpoint: &Endpoint) -> Result<String> {
-    let client = reqwest::blocking::Client::builder()
-        .default_headers(create_header_map(&config, &endpoint))
-        .build()
-        .map_err(|_| {
-            AppError(
-                AppErrorType::UnableToCreateHttpClient,
-                "Unable to create http client",
-            )
-        })?;
-
+    let client = reqwest::blocking::Client::new();
     let result = client
-        .request(endpoint.method.to_owned(), &endpoint.url)
+        .request(
+            endpoint.method.clone(),
+            reqwest::Url::parse(&endpoint.url).unwrap(),
+        )
+        .headers(create_headers(&config.requests.headers))
+        .headers(create_headers(&endpoint.headers))
         .send()
         .map_err(|_| {
             AppError(
@@ -45,30 +41,24 @@ pub fn make_http_request(config: &Config, endpoint: &Endpoint) -> Result<String>
     })?)
 }
 
-fn create_header_map(config: &Config, endpoint: &Endpoint) -> HeaderMap {
-    let global = create_headers(&config.requests.headers);
-    let child = create_headers(&endpoint.headers);
-    global.into_iter().chain(child).collect()
-}
+fn create_headers(headers: &HashMap<String, String>) -> HeaderMap {
+    let mut result = HeaderMap::new();
 
-fn create_headers(headers: &HashMap<String, String>) -> HashMap<HeaderName, HeaderValue> {
-    let mut result = HashMap::new();
-
-    for (k, v) in headers.iter() {
-        let name = HeaderName::from_str(k);
-        let value = HeaderValue::from_str(v);
-
-        // Filter invalid headers
-        if name.is_err() || value.is_err() {
-            warn!(
-                "Invalid request header:\nName :: {:?}\nValue :: {:?}",
-                name, value
-            );
-            continue;
-        }
-
-        result.insert(name.unwrap(), value.unwrap());
-    }
+    headers
+        .iter()
+        .map(|(k, v)| (HeaderName::from_str(k), HeaderValue::from_str(v)))
+        .inspect(|(k, v)| {
+            if k.is_err() || v.is_err() {
+                warn!(
+                    "Invalid request header:\nName :: {:?}\nValue :: {:?}, skipping",
+                    k, v
+                );
+            }
+        })
+        .filter(|(k, v)| k.is_ok() && v.is_ok())
+        .for_each(|(k, v)| {
+            result.insert(k.unwrap(), v.unwrap());
+        });
 
     result
 }

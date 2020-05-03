@@ -39,7 +39,7 @@ pub struct Endpoint {
 }
 
 impl Config {
-    pub fn from_args(args: &Vec<String>) -> Result<Config> {
+    pub fn from_args(args: &[String]) -> Result<Config> {
         use std::fs::File;
         use std::io::{self, Read};
 
@@ -55,7 +55,7 @@ impl Config {
         Ok(yaml_config?.as_config())
     }
 
-    fn parse_env_config_path(args: &Vec<String>) -> Result<PathBuf> {
+    fn parse_env_config_path(args: &[String]) -> Result<PathBuf> {
         use std::path::Path;
 
         use crate::errors::AppErrorType::{InvalidConfigFileFormat, MissingConfig};
