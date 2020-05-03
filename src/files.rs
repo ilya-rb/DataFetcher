@@ -20,7 +20,7 @@ pub fn create_dst_file(root_folder_path: &str, url: &str) -> Result<FileToSave> 
     let (file_name, url_path) = url_path.split_last().unwrap();
 
     // Trim ending slash if needed
-    let root_folder_path = if root_folder_path.ends_with("/") {
+    let root_folder_path = if root_folder_path.ends_with('/') {
         &root_folder_path[0..root_folder_path.len() - 1]
     } else {
         root_folder_path

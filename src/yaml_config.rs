@@ -1,6 +1,9 @@
 use crate::config::{Config, Endpoint, Requests};
+
 use serde::Deserialize;
+
 use std::collections::HashMap;
+use std::str::FromStr;
 
 #[derive(Deserialize, Debug)]
 pub struct YamlConfig {
@@ -62,10 +65,10 @@ impl YamlEndpoint {
 
 fn parse_method(method: &str) -> reqwest::Method {
     use reqwest::Method;
-    Method::from_bytes(method.to_lowercase().as_bytes()).unwrap_or(Method::GET)
+    Method::from_str(method.to_uppercase().as_str()).unwrap_or(Method::GET)
 }
 
-fn convert_headers_to_map(headers: &Vec<String>) -> HashMap<String, String> {
+fn convert_headers_to_map(headers: &[String]) -> HashMap<String, String> {
     headers
         .iter()
         .map(|h| h.split(':').collect::<Vec<&str>>())

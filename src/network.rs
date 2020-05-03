@@ -10,18 +10,13 @@ use std::str::FromStr;
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 
 pub fn make_http_request(config: &Config, endpoint: &Endpoint) -> Result<String> {
-    let client = reqwest::blocking::Client::builder()
-        .default_headers(create_header_map(&config, &endpoint))
-        .build()
-        .map_err(|_| {
-            AppError(
-                AppErrorType::UnableToCreateHttpClient,
-                "Unable to create http client",
-            )
-        })?;
-
+    let client = reqwest::blocking::Client::new();
     let result = client
-        .request(endpoint.method.to_owned(), &endpoint.url)
+        .request(
+            endpoint.method.clone(),
+            reqwest::Url::parse(&endpoint.url).unwrap(),
+        )
+        .headers(create_header_map(&config, &endpoint))
         .send()
         .map_err(|_| {
             AppError(

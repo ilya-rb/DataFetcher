@@ -10,3 +10,4 @@ requests:
         # - Content-Type:text/plain
     - url: https://dog.ceo/api/breed/airedale/images/random
     - url: https://dog.ceo/api/breed/akita/images/random
+    - url: https://http.cat/404
