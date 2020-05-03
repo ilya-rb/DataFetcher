@@ -3,6 +3,7 @@ use crate::types::Result;
 
 const FILE_TO_SAVE_EXT: &str = "json";
 
+#[derive(Debug)]
 pub struct FileToSave {
     pub file_path: String,
     pub file_name: String,
@@ -57,8 +58,7 @@ pub fn write_response_to_file(dst: FileToSave, response: String) -> Result<()> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::errors::AppErrorType;
-
+    
     #[test]
     fn create_dst_file_should_return_correct_file() {
         let root_folder_path = "dst/root/";
@@ -67,14 +67,5 @@ mod test {
 
         assert_eq!(result.file_path, "dst/root/endpoint");
         assert_eq!(result.file_name, "dst/root/endpoint/path.json");
-    }
-
-    #[test]
-    fn create_dst_file_should_fail_on_invalid_url() {
-        let root_folder_path = "root/";
-        let url = "http:/some_invalid_url/";
-        let result = create_dst_file(&root_folder_path, &url);
-
-        assert_eq!(result.err().unwrap(), AppErrorType::UrlParseError);
     }
 }
