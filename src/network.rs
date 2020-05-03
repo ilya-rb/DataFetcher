@@ -58,7 +58,6 @@ fn create_headers(headers: &HashMap<String, String>) -> HeaderMap {
         .filter(|(k, v)| k.is_ok() && v.is_ok())
         .for_each(|(k, v)| {
             result.insert(k.unwrap(), v.unwrap());
-            ()
         });
 
     result
