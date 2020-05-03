@@ -58,7 +58,7 @@ pub fn write_response_to_file(dst: FileToSave, response: String) -> Result<()> {
 #[cfg(test)]
 mod test {
     use super::*;
-    
+
     #[test]
     fn create_dst_file_should_return_correct_file() {
         let root_folder_path = "dst/root/";

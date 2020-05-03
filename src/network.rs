@@ -44,16 +44,20 @@ pub fn make_http_request(config: &Config, endpoint: &Endpoint) -> Result<String>
 fn create_headers(headers: &HashMap<String, String>) -> HeaderMap {
     let mut result = HeaderMap::new();
 
-    headers.iter()
+    headers
+        .iter()
         .map(|(k, v)| (HeaderName::from_str(k), HeaderValue::from_str(v)))
         .inspect(|(k, v)| {
             if k.is_err() || v.is_err() {
-                warn!("Invalid request header:\nName :: {:?}\nValue :: {:?}, skipping", k, v);
+                warn!(
+                    "Invalid request header:\nName :: {:?}\nValue :: {:?}, skipping",
+                    k, v
+                );
             }
         })
         .filter(|(k, v)| k.is_ok() && v.is_ok())
-        .for_each(|(k, v)| { 
-            result.insert(k.unwrap(), v.unwrap()); 
+        .for_each(|(k, v)| {
+            result.insert(k.unwrap(), v.unwrap());
             ()
         });
 
