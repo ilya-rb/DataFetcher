@@ -1,7 +1,9 @@
 use crate::errors::Error;
 use crate::types::Result;
 
-const FILE_TO_SAVE_EXT: &str = "json";
+pub const EXT_TEXT: &str = "txt";
+pub const EXT_HTML: &str = "html";
+pub const EXT_JSON: &str = "json";
 
 #[derive(Debug)]
 pub struct FileToSave {
@@ -28,7 +30,7 @@ pub fn create_dst_file(root_folder_path: &str, url: &str) -> Result<FileToSave> 
     };
 
     let file_path = format!("{}/{}", root_folder_path, url_path.join("/"));
-    let file_name = format!("{}/{}.{}", file_path, file_name, FILE_TO_SAVE_EXT);
+    let file_name = format!("{}/{}", file_path, file_name);
 
     Ok(FileToSave {
         file_path,
@@ -36,7 +38,18 @@ pub fn create_dst_file(root_folder_path: &str, url: &str) -> Result<FileToSave> 
     })
 }
 
-pub fn write_response_to_file(dst: FileToSave, response: String) -> Result<()> {
+pub fn is_file_exists(file_name: &str) -> bool {
+    vec![EXT_TEXT, EXT_HTML, EXT_JSON]
+        .iter()
+        .map(|ext| format!("{}.{}", file_name, ext))
+        .any(|path| std::path::Path::new(&path).exists())
+}
+
+pub fn write_response_to_file(
+    dst: FileToSave,
+    file_extension: &str,
+    response: String,
+) -> Result<()> {
     use std::fs;
     use std::fs::File;
     use std::io::Write;
@@ -49,7 +62,7 @@ pub fn write_response_to_file(dst: FileToSave, response: String) -> Result<()> {
         }
     };
 
-    let mut dst_file = File::create(dst.file_name)?;
+    let mut dst_file = File::create(format!("{}.{}", dst.file_name, file_extension))?;
     dst_file.write_all(&response.as_bytes())?;
 
     Ok(())
@@ -66,6 +79,6 @@ mod test {
         let result = create_dst_file(&root_folder_path, &url).unwrap();
 
         assert_eq!(result.file_path, "dst/root/endpoint");
-        assert_eq!(result.file_name, "dst/root/endpoint/path.json");
+        assert_eq!(result.file_name, "dst/root/endpoint/path");
     }
 }

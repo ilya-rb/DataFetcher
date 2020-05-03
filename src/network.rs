@@ -2,6 +2,7 @@ use crate::config::Config;
 use crate::config::Endpoint;
 use crate::errors::AppErrorType;
 use crate::errors::Error::AppError;
+use crate::files;
 use crate::types::Result;
 
 use std::collections::HashMap;
@@ -9,7 +10,41 @@ use std::str::FromStr;
 
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 
-pub fn make_http_request(config: &Config, endpoint: &Endpoint) -> Result<String> {
+pub enum ContentType {
+    Json,
+    Text,
+    Html,
+}
+
+impl ContentType {
+    pub fn get_file_extension(&self) -> &str {
+        match self {
+            ContentType::Json => files::EXT_JSON,
+            ContentType::Text => files::EXT_TEXT,
+            ContentType::Html => files::EXT_HTML,
+        }
+    }
+
+    fn from_header_value(header_value: &HeaderValue) -> ContentType {
+        if header_value == CONTENT_TYPE_JSON {
+            ContentType::Json
+        } else if header_value == CONTENT_TYPE_HTML {
+            ContentType::Html
+        } else {
+            ContentType::Text
+        }
+    }
+}
+
+const CONTENT_TYPE_JSON: &str = "application/json";
+const CONTENT_TYPE_HTML: &str = "text/html";
+
+pub struct Response {
+    pub content_type: ContentType,
+    pub response_text: String,
+}
+
+pub fn make_http_request(config: &Config, endpoint: &Endpoint) -> Result<Response> {
     let client = reqwest::blocking::Client::new();
     let result = client
         .request(
@@ -33,12 +68,22 @@ pub fn make_http_request(config: &Config, endpoint: &Endpoint) -> Result<String>
         error!("{}", status);
     }
 
-    Ok(result.text().map_err(|_| {
+    let content_type = match result.headers().get(reqwest::header::CONTENT_TYPE) {
+        Some(content_type) => ContentType::from_header_value(content_type),
+        None => ContentType::Text,
+    };
+
+    let response_text = result.text().map_err(|_| {
         AppError(
             AppErrorType::ResponseParseError,
             "Error parsing request body",
         )
-    })?)
+    })?;
+
+    Ok(Response {
+        content_type,
+        response_text,
+    })
 }
 
 fn create_headers(headers: &HashMap<String, String>) -> HeaderMap {
