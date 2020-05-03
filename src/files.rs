@@ -79,6 +79,6 @@ mod test {
         let result = create_dst_file(&root_folder_path, &url).unwrap();
 
         assert_eq!(result.file_path, "dst/root/endpoint");
-        assert_eq!(result.file_name, "dst/root/endpoint/path.json");
+        assert_eq!(result.file_name, "dst/root/endpoint/path");
     }
 }
