@@ -16,7 +16,6 @@ const FLAG_FORCE: &str = "--force";
 
 pub fn run() -> Result<()> {
     use config::Config;
-    use std::path::Path;
 
     let args: Vec<String> = std::env::args().map(|arg| arg.to_lowercase()).collect();
 
@@ -33,24 +32,23 @@ pub fn run() -> Result<()> {
 
     for e in config.requests.endpoints.iter() {
         let dst_file = files::create_dst_file(&config.dst, &e.url)?;
-        let dst_file_path = Path::new(&dst_file.file_name);
 
-        if dst_file_path.exists() && !args.contains(&FLAG_FORCE.to_string()) {
-            let file = std::fs::File::open(&dst_file_path)?;
-            let metadata = file.metadata()?;
-
-            // File already contain some response - skip downloading.
-            if metadata.len() > 0 {
-                skipped_request_count += 1;
-                continue;
-            }
+        if files::is_file_exists(dst_file.file_name.as_str())
+            && !args.contains(&FLAG_FORCE.to_string())
+        {
+            skipped_request_count += 1;
+            continue;
         }
 
         info!("{} :: {}", &e.method, &e.url);
 
         match network::make_http_request(&config, &e) {
             Ok(response) => {
-                files::write_response_to_file(dst_file, response)?;
+                files::write_response_to_file(
+                    dst_file,
+                    response.content_type.get_file_extension(),
+                    response.response_text,
+                )?;
                 executed_request_count += 1;
             }
             Err(err) => error!("Error fetching from: {}\n{}", &e.url, err),
